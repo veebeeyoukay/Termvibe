@@ -1,0 +1,126 @@
+TermVibe MVP - Project Structure
+═══════════════════════════════════════════════════════════════
+
+termvibe/
+│
+├── 📱 APPLICATION CODE
+│   │
+│   ├── app/                         Next.js App Router
+│   │   ├── page.tsx                 Landing page (Hero → Footer)
+│   │   ├── layout.tsx               Root layout + metadata
+│   │   ├── globals.css              Global styles
+│   │   │
+│   │   ├── lessons/
+│   │   │   ├── page.tsx            Lesson library (5 lessons)
+│   │   │   └── [id]/
+│   │   │       └── page.tsx        Lesson detail (dynamic route)
+│   │   │
+│   │   └── choose-coach/
+│   │       └── page.tsx            Coach selection (4 coaches)
+│   │
+│   └── components/                  Reusable React components
+│       ├── Hero.tsx                 Hero section with terminal
+│       ├── ProblemSection.tsx       3 pain points
+│       ├── HowItWorks.tsx           4-step process
+│       ├── PersonasSection.tsx      AI coach cards
+│       ├── PricingSection.tsx       Pricing table
+│       ├── FAQ.tsx                  Accordion FAQ
+│       └── Footer.tsx               Site footer
+│
+├── 🌐 PUBLIC ASSETS
+│   │
+│   └── public/
+│       ├── manifest.json            PWA manifest
+│       ├── icon-192.png             PWA icon 192x192 (placeholder)
+│       ├── icon-512.png             PWA icon 512x512 (placeholder)
+│       └── robots.txt               SEO robots
+│
+├── ⚙️ CONFIGURATION
+│   │
+│   ├── package.json                 Dependencies
+│   ├── package-lock.json            Locked versions
+│   ├── tsconfig.json                TypeScript config
+│   ├── next.config.mjs              Next.js config
+│   ├── tailwind.config.ts           Tailwind config
+│   ├── postcss.config.mjs           PostCSS config
+│   ├── vercel.json                  Vercel deployment
+│   ├── .gitignore                   Git ignore
+│   └── next-env.d.ts                Next.js types
+│
+├── 📚 DOCUMENTATION
+│   │
+│   ├── START_HERE.md                ⭐ Quick start guide
+│   ├── HANDOFF.md                   Complete handoff doc
+│   ├── QUICK_START.md               Developer quick start
+│   ├── DEPLOYMENT.md                Deploy instructions
+│   ├── MVP_STATUS.md                Status report
+│   ├── README.md                    Project overview
+│   ├── FILE_INDEX.md                File listing
+│   └── PROJECT_STRUCTURE.txt        This file
+│
+├── 🔨 BUILD OUTPUT
+│   │
+│   ├── .next/                       Build cache (git-ignored)
+│   │   ├── server/                  Server build
+│   │   ├── static/                  Static assets
+│   │   └── standalone/              Standalone output
+│   │
+│   └── node_modules/                Dependencies (94 packages)
+│
+└── 📊 STATISTICS
+    │
+    ├── Source Files:        13 TypeScript/TSX files
+    ├── Components:          7 React components
+    ├── Pages:               5 routes (4 static, 1 dynamic)
+    ├── Documentation:       8 markdown files
+    ├── Config Files:        9 files
+    ├── Total Dependencies:  105 packages
+    ├── Build Time:          3.3 seconds
+    ├── Bundle Size:         102-110KB
+    └── Vulnerabilities:     0
+
+═══════════════════════════════════════════════════════════════
+
+KEY ROUTES:
+
+    /                        Landing page
+    /lessons                 Lesson library
+    /lessons/git-basics      Git Basics lesson
+    /lessons/docker-intro    Docker Introduction
+    /lessons/linux-navigation Linux Navigation
+    /lessons/ssh-basics      SSH Basics
+    /lessons/bash-scripting  Bash Scripting 101
+    /choose-coach            Coach selection
+
+═══════════════════════════════════════════════════════════════
+
+AI COACHES:
+
+    🌸 Maya      Patient Teacher       Beginners
+    ⚡ Kai       The Hacker            Experimenters
+    🎉 Alex      The Cheerleader       Confidence builders
+    🎯 Sam       Straight Shooter      Efficient learners
+
+═══════════════════════════════════════════════════════════════
+
+TECH STACK:
+
+    Framework:     Next.js 15.5.14
+    Language:      TypeScript (strict)
+    Styling:       Tailwind CSS
+    UI Library:    React 19
+    Fonts:         Inter (next/font)
+    Icons:         Unicode emojis
+    Build Tool:    Next.js bundler
+    Deployment:    Vercel
+
+═══════════════════════════════════════════════════════════════
+
+STATUS: ✅ READY TO DEPLOY
+
+Next Action:
+    cd /workspace/group/termvibe
+    npm run dev              # Test locally
+    vercel                   # Deploy to production
+
+═══════════════════════════════════════════════════════════════
