@@ -1,5 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import UpgradeModal from "@/components/UpgradeModal";
+import { useSubscription } from "@/lib/subscription";
 
 const lessons = [
   {
@@ -47,11 +52,39 @@ const lessons = [
     progress: 0,
     topics: ["variables", "loops", "conditionals", "functions"],
   },
+  {
+    id: "vibe-coding-deployment",
+    title: "Vibe Coding: Deployment & Env",
+    description: "The essential CLI guide for shipping AI-generated apps",
+    difficulty: "Beginner",
+    duration: "10 min",
+    progress: 0,
+    topics: ["npm install", ".env", "vercel deploy", "railway up"],
+    isPremium: true,
+  },
 ];
 
 export default function LessonsPage() {
+  const { isPro, upgradeToPro } = useSubscription();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const handleLessonClick = (e: React.MouseEvent, isPremium: boolean) => {
+    if (isPremium && !isPro) {
+      e.preventDefault();
+      setShowUpgradeModal(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onUpgrade={() => {
+          upgradeToPro();
+          setShowUpgradeModal(false);
+        }}
+      />
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary">
@@ -87,12 +120,22 @@ export default function LessonsPage() {
               <Link
                 key={lesson.id}
                 href={`/lessons/${lesson.id}`}
-                className="block bg-white rounded-lg shadow-sm border-2 border-gray-200 hover:border-primary hover:shadow-md transition-all p-6"
+                onClick={(e) => handleLessonClick(e, !!(lesson as any).isPremium)}
+                className={`block bg-white rounded-lg shadow-sm border-2 transition-all p-6 ${
+                  (lesson as any).isPremium && !isPro
+                    ? "border-purple-200 opacity-90 grayscale-[0.5] hover:grayscale-0"
+                    : "border-gray-200 hover:border-primary hover:shadow-md"
+                }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold">{lesson.title}</h3>
+                      {(lesson as any).isPremium && (
+                        <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-[10px] font-bold rounded uppercase tracking-wider">
+                          Pro
+                        </span>
+                      )}
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
                           lesson.difficulty === "Beginner"

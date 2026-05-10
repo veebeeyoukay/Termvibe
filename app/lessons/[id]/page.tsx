@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import UpgradeModal from "@/components/UpgradeModal";
+import { useSubscription } from "@/lib/subscription";
 
 const lessonData: Record<string, any> = {
   "git-basics": {
@@ -126,6 +128,34 @@ const lessonData: Record<string, any> = {
       },
     ],
   },
+  "vibe-coding-deployment": {
+    title: "Vibe Coding: Deployment & Env",
+    difficulty: "Beginner",
+    duration: "10 min",
+    isPremium: true,
+    coach: "Kai",
+    sections: [
+      {
+        title: "The Vibe Coder's Secret Weapon",
+        content: "You've got your AI-generated code. Now you need to make it live. Most deployment issues are just missing environment variables or uninstalled dependencies.",
+      },
+      {
+        title: "Installing Dependencies",
+        content: "When you download an AI project or clone a repo, the first step is always installing the packages.",
+        command: "npm install",
+      },
+      {
+        title: "Setting Up Environment Variables",
+        content: "Secrets like API keys should never be in your code. We use .env files for that. Let's see if one exists.",
+        command: "ls -a",
+      },
+      {
+        title: "Shipping to the Cloud",
+        content: "Ready to go live? Tools like Vercel and Railway have CLIs that let you deploy in one command.",
+        command: "vercel deploy",
+      },
+    ],
+  },
 };
 
 const coachResponses: Record<string, string[]> = {
@@ -153,8 +183,18 @@ const coachResponses: Record<string, string[]> = {
 
 export default function LessonDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const lessonId = params.id as string;
   const lesson = lessonData[lessonId] || lessonData["git-basics"];
+
+  const { isPro, isLoading, upgradeToPro } = useSubscription();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && (lesson as any).isPremium && !isPro) {
+      setShowUpgradeModal(true);
+    }
+  }, [isLoading, isPro, lesson]);
 
   const [currentSection, setCurrentSection] = useState(0);
   const [terminalInput, setTerminalInput] = useState("");
@@ -181,6 +221,14 @@ export default function LessonDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => router.push("/lessons")}
+        onUpgrade={() => {
+          upgradeToPro();
+          setShowUpgradeModal(false);
+        }}
+      />
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/lessons" className="text-primary hover:underline">
