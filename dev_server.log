@@ -1,0 +1,21 @@
+
+> termvibe@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+   ▲ Next.js 15.5.14
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.0.2:3001
+
+ ✓ Starting...
+ ✓ Ready in 2.4s
+ ○ Compiling /lessons/[id] ...
+ ✓ Compiled /lessons/[id] in 3.9s (616 modules)
+ ✓ Compiled in 1836ms (247 modules)
+ GET /lessons/linux-navigation 200 in 8028ms
+ GET /lessons/linux-navigation 200 in 218ms
+ GET /lessons/vibe-coding-deployment 200 in 146ms
+ GET /lessons/vibe-coding-deployment 200 in 324ms
+ GET /lessons/vibe-coding-deployment 200 in 160ms
+ GET /lessons/vibe-coding-deployment 200 in 157ms
+ ✓ Compiled in 1373ms (616 modules)

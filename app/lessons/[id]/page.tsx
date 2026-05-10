@@ -6,8 +6,25 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import UpgradeModal from "@/components/UpgradeModal";
 import { useSubscription } from "@/lib/subscription";
+import { TerminalEngine } from "@/lib/terminal-engine";
+import { VirtualFS } from "@/lib/vfs";
 
-const lessonData: Record<string, any> = {
+interface LessonSection {
+  title: string;
+  content: string;
+  command?: string;
+}
+
+interface Lesson {
+  title: string;
+  difficulty: string;
+  duration: string;
+  coach: string;
+  sections: LessonSection[];
+  isPremium?: boolean;
+}
+
+const lessonData: Record<string, Lesson> = {
   "git-basics": {
     title: "Git Basics",
     difficulty: "Beginner",
@@ -191,7 +208,7 @@ export default function LessonDetailPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && (lesson as any).isPremium && !isPro) {
+    if (!isLoading && lesson.isPremium && !isPro) {
       setShowUpgradeModal(true);
     }
   }, [isLoading, isPro, lesson]);
@@ -201,21 +218,41 @@ export default function LessonDetailPage() {
   const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
   const [showHint, setShowHint] = useState(false);
 
+  // Initialize Terminal Engine and VFS
+  const [terminalEngine] = useState(() => new TerminalEngine());
+
+  const handleResetEnvironment = () => {
+    terminalEngine.vfs = new VirtualFS();
+    setTerminalHistory(["Environment reset successfully."]);
+  };
+
   const handleTerminalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!terminalInput.trim()) return;
 
-    const command = terminalInput.trim();
+    const commandLine = terminalInput.trim();
+    const output = terminalEngine.execute(commandLine);
     const coachResponse =
       coachResponses[lesson.coach][Math.floor(Math.random() * coachResponses[lesson.coach].length)];
 
-    setTerminalHistory([
-      ...terminalHistory,
-      `$ ${command}`,
-      lesson.sections[currentSection].command === command
-        ? `✓ Correct! ${coachResponse}`
-        : `Command executed. ${coachResponse}`,
-    ]);
+    if (output === "CLEAR_TERMINAL") {
+      setTerminalHistory([]);
+    } else {
+      const historyUpdate = [`$ ${commandLine}`];
+      if (output) {
+        historyUpdate.push(output);
+      }
+
+      // Check if the command was the expected one
+      const expectedCommand = lesson.sections[currentSection].command;
+      if (expectedCommand && commandLine === expectedCommand) {
+        historyUpdate.push(`✓ Correct! ${coachResponse}`);
+      } else if (commandLine !== "clear" && commandLine !== "help") {
+        historyUpdate.push(coachResponse);
+      }
+
+      setTerminalHistory([...terminalHistory, ...historyUpdate]);
+    }
     setTerminalInput("");
   };
 
@@ -268,20 +305,30 @@ export default function LessonDetailPage() {
 
               {/* Terminal Simulator */}
               <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-                <div className="bg-gray-800 px-4 py-2 flex items-center gap-2">
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div className="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span className="text-gray-400 text-sm ml-2">terminal simulator</span>
                   </div>
-                  <span className="text-gray-400 text-sm ml-2">terminal simulator</span>
+                  <button
+                    onClick={handleResetEnvironment}
+                    className="text-[10px] text-gray-400 hover:text-white border border-gray-600 px-2 py-0.5 rounded transition-colors"
+                  >
+                    Reset Environment
+                  </button>
                 </div>
                 <div className="p-4 font-mono text-sm min-h-[200px]">
                   <div className="space-y-2 mb-4">
                     {terminalHistory.map((line, index) => (
                       <div
                         key={index}
-                        className={line.startsWith("$") ? "text-white" : "text-green-300"}
+                        className={`${
+                          line.startsWith("$") ? "text-white" : "text-green-300"
+                        } whitespace-pre-wrap`}
                       >
                         {line}
                       </div>
