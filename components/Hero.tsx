@@ -7,16 +7,15 @@ export default function Hero() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
           <div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Learn Terminal with an AI Coach That Actually Gets You
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              The AI Terminal for Vibe Coders
             </h1>
             <h2 className="text-xl md:text-2xl text-neutral mb-8">
-              No more cryptic error messages. No more Googling the same commands.
-              Just you, your AI persona, and a terminal that finally makes sense.
+              Don&apos;t let the CLI slow down your vibe. Master the terminal to deploy, debug, and ship your AI-generated apps faster than ever.
             </h2>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <Link href="/lessons" className="btn-primary text-center">
-                Join Beta (Free)
+              <Link href="/lessons" className="btn-primary text-center px-8">
+                Start Shipping — Free
               </Link>
               <a
                 href="https://github.com/veebeeyoukay/Termvibe"
@@ -28,11 +27,11 @@ export default function Hero() {
               </a>
             </div>
             <p className="text-sm text-neutral mb-2">
-              Free forever for 20 core lessons • Open source terminal bridge
+              Optimized for Cursor, Replit, and AI-First workflows
             </p>
             <p className="text-sm text-neutral flex items-center gap-2">
               <span className="text-lg">✨</span>
-              Powered by Claude AI • Built by developers, for developers
+              Powered by Claude AI • Built for the next generation of builders
             </p>
           </div>
 

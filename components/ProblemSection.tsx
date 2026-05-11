@@ -1,27 +1,27 @@
 export default function ProblemSection() {
   const problems = [
     {
-      emoji: "😰",
-      stat: "70% of developers struggle to remember commands",
-      quote: "Is it `git pull origin main` or `git pull main origin`? I Google this every time.",
+      emoji: "🚧",
+      stat: "The Deployment Wall",
+      quote: "Cursor built my app in 5 minutes, but I spent 2 hours trying to figure out how to set an environment variable in the terminal.",
     },
     {
-      emoji: "🔥",
-      stat: "Bootcamp grads face 37% skills gap in CLI/DevOps",
-      quote: "My bootcamp taught me React. My job expects me to SSH into servers and debug Docker.",
+      emoji: "🤖",
+      stat: "AI Tooling Friction",
+      quote: "I can prompt anything, but when Replit asks me to 'check the logs in the console', I have no idea what commands to run.",
     },
     {
-      emoji: "📱",
-      stat: "Mobile-first devs hit a wall when learning backend",
-      quote: "Xcode hides everything. When I started learning Docker, I realized I had zero terminal skills.",
+      emoji: "🚢",
+      stat: "The 'Localhost' Trap",
+      quote: "My app works on my machine, but 'just deploy it to Railway/Vercel' involves CLI steps that feel like a foreign language.",
     },
   ];
 
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="section-heading text-center mb-16">
-          Terminal Shouldn&apos;t Feel Like a 90s Hacker Movie
+        <h2 className="section-heading text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">
+          The Last Barrier to Shipping Your AI Apps
         </h2>
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {problems.map((problem, index) => (

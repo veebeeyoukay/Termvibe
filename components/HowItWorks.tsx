@@ -3,26 +3,26 @@ export default function HowItWorks() {
     {
       number: 1,
       emoji: "🎭",
-      title: "Choose Your Coach",
-      description: "Pick from 4 AI personas: Maya (patient teacher), Kai (hacker energy), Alex (encouraging), Sam (direct)",
+      title: "Select Your AI Persona",
+      description: "Pick a coach that matches your energy. Whether you want a patient guide or a direct straight-shooter, we've got you covered.",
     },
     {
       number: 2,
-      emoji: "📚",
-      title: "Start With Basics (Or Skip Ahead)",
-      description: "20 free lessons: Git, Docker, Linux, SSH, Bash scripting",
+      emoji: "🚀",
+      title: "AI-First Lessons",
+      description: "Focused on what vibe coders actually need: npm, env vars, git flows, and cloud deployments. No fluff.",
     },
     {
       number: 3,
-      emoji: "⚡",
-      title: "Practice in Real Terminal",
-      description: "Connect to your Mac, Tailscale machine, or use our browser simulator",
+      emoji: "💻",
+      title: "Interactive Sandbox",
+      description: "Practice in our secure browser terminal or connect to your own environment via our bridge.",
     },
     {
       number: 4,
-      emoji: "🤖",
-      title: "Get Real-Time AI Coaching",
-      description: "Your coach watches, guides, encourages — like pair programming for terminal",
+      emoji: "✨",
+      title: "Ship With Confidence",
+      description: "Go from 'I hope this works' to 'I know why this works'. Master the CLI to support your AI-assisted builds.",
     },
   ];
 
@@ -30,7 +30,7 @@ export default function HowItWorks() {
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4">
         <h2 className="section-heading text-center mb-16">
-          Meet Your AI Terminal Coach
+          How to Master the Vibe
         </h2>
         <div className="max-w-4xl mx-auto space-y-12">
           {steps.map((step) => (

@@ -1,11 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import UpgradeModal from "@/components/UpgradeModal";
+import { useSubscription } from "@/lib/subscription";
+import { TerminalEngine } from "@/lib/terminal-engine";
+import { VirtualFS } from "@/lib/vfs";
 
-const lessonData: Record<string, any> = {
+interface LessonSection {
+  title: string;
+  content: string;
+  command?: string;
+}
+
+interface Lesson {
+  title: string;
+  difficulty: string;
+  duration: string;
+  coach: string;
+  sections: LessonSection[];
+  isPremium?: boolean;
+}
+
+const lessonData: Record<string, Lesson> = {
   "git-basics": {
     title: "Git Basics",
     difficulty: "Beginner",
@@ -126,6 +145,34 @@ const lessonData: Record<string, any> = {
       },
     ],
   },
+  "vibe-coding-deployment": {
+    title: "Vibe Coding: Deployment & Env",
+    difficulty: "Beginner",
+    duration: "10 min",
+    isPremium: true,
+    coach: "Kai",
+    sections: [
+      {
+        title: "The Vibe Coder's Secret Weapon",
+        content: "You've got your AI-generated code. Now you need to make it live. Most deployment issues are just missing environment variables or uninstalled dependencies.",
+      },
+      {
+        title: "Installing Dependencies",
+        content: "When you download an AI project or clone a repo, the first step is always installing the packages.",
+        command: "npm install",
+      },
+      {
+        title: "Setting Up Environment Variables",
+        content: "Secrets like API keys should never be in your code. We use .env files for that. Let's see if one exists.",
+        command: "ls -a",
+      },
+      {
+        title: "Shipping to the Cloud",
+        content: "Ready to go live? Tools like Vercel and Railway have CLIs that let you deploy in one command.",
+        command: "vercel deploy",
+      },
+    ],
+  },
 };
 
 const coachResponses: Record<string, string[]> = {
@@ -153,34 +200,72 @@ const coachResponses: Record<string, string[]> = {
 
 export default function LessonDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const lessonId = params.id as string;
   const lesson = lessonData[lessonId] || lessonData["git-basics"];
+
+  const { isPro, isLoading, upgradeToPro } = useSubscription();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && lesson.isPremium && !isPro) {
+      setShowUpgradeModal(true);
+    }
+  }, [isLoading, isPro, lesson]);
 
   const [currentSection, setCurrentSection] = useState(0);
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
   const [showHint, setShowHint] = useState(false);
 
+  // Initialize Terminal Engine and VFS
+  const [terminalEngine] = useState(() => new TerminalEngine());
+
+  const handleResetEnvironment = () => {
+    terminalEngine.vfs = new VirtualFS();
+    setTerminalHistory(["Environment reset successfully."]);
+  };
+
   const handleTerminalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!terminalInput.trim()) return;
 
-    const command = terminalInput.trim();
+    const commandLine = terminalInput.trim();
+    const output = terminalEngine.execute(commandLine);
     const coachResponse =
       coachResponses[lesson.coach][Math.floor(Math.random() * coachResponses[lesson.coach].length)];
 
-    setTerminalHistory([
-      ...terminalHistory,
-      `$ ${command}`,
-      lesson.sections[currentSection].command === command
-        ? `✓ Correct! ${coachResponse}`
-        : `Command executed. ${coachResponse}`,
-    ]);
+    if (output === "CLEAR_TERMINAL") {
+      setTerminalHistory([]);
+    } else {
+      const historyUpdate = [`$ ${commandLine}`];
+      if (output) {
+        historyUpdate.push(output);
+      }
+
+      // Check if the command was the expected one
+      const expectedCommand = lesson.sections[currentSection].command;
+      if (expectedCommand && commandLine === expectedCommand) {
+        historyUpdate.push(`✓ Correct! ${coachResponse}`);
+      } else if (commandLine !== "clear" && commandLine !== "help") {
+        historyUpdate.push(coachResponse);
+      }
+
+      setTerminalHistory([...terminalHistory, ...historyUpdate]);
+    }
     setTerminalInput("");
   };
 
   return (
     <div className="min-h-screen bg-background">
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => router.push("/lessons")}
+        onUpgrade={() => {
+          upgradeToPro();
+          setShowUpgradeModal(false);
+        }}
+      />
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/lessons" className="text-primary hover:underline">
@@ -220,20 +305,30 @@ export default function LessonDetailPage() {
 
               {/* Terminal Simulator */}
               <div className="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
-                <div className="bg-gray-800 px-4 py-2 flex items-center gap-2">
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div className="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span className="text-gray-400 text-sm ml-2">terminal simulator</span>
                   </div>
-                  <span className="text-gray-400 text-sm ml-2">terminal simulator</span>
+                  <button
+                    onClick={handleResetEnvironment}
+                    className="text-[10px] text-gray-400 hover:text-white border border-gray-600 px-2 py-0.5 rounded transition-colors"
+                  >
+                    Reset Environment
+                  </button>
                 </div>
                 <div className="p-4 font-mono text-sm min-h-[200px]">
                   <div className="space-y-2 mb-4">
                     {terminalHistory.map((line, index) => (
                       <div
                         key={index}
-                        className={line.startsWith("$") ? "text-white" : "text-green-300"}
+                        className={`${
+                          line.startsWith("$") ? "text-white" : "text-green-300"
+                        } whitespace-pre-wrap`}
                       >
                         {line}
                       </div>

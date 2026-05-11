@@ -21,19 +21,19 @@ export default function PricingSection() {
     },
     {
       name: "PRO",
-      subtitle: "Best for Learners",
+      subtitle: "The Vibe Coder's Edge",
       price: "$14.99",
       period: "month",
       features: [
         "Everything in Free, plus:",
-        "100+ advanced lessons (Docker, K8s, AWS CLI)",
+        "Advanced Vibe Coding Lessons",
+        "One-click deployment guides (Vercel/Railway)",
         "Unlimited AI persona coaching",
         "4 AI coaches (Maya, Kai, Alex, Sam)",
-        "Advanced progress analytics",
-        "Downloadable cheat sheets",
-        "Priority support (Discord/email)",
+        "Custom environment variables guide",
+        "Priority support for your AI apps",
       ],
-      cta: "Start Free Trial — 14 Days",
+      cta: "Level Up Your Vibe — $14.99",
       ctaLink: "/lessons",
       highlight: true,
     },
@@ -60,11 +60,11 @@ export default function PricingSection() {
   return (
     <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4">
-        <h2 className="section-heading text-center mb-4">
-          Free to Start. Pro to Master.
+        <h2 className="section-heading text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          Scale Your Vibe. Ship Your Vision.
         </h2>
         <p className="section-subheading text-center mb-16">
-          Choose the plan that fits your learning journey
+          Simple pricing for the next generation of AI-first builders.
         </p>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-8">
           {tiers.map((tier) => (
@@ -121,8 +121,8 @@ export default function PricingSection() {
           ))}
         </div>
         <p className="text-center text-sm text-neutral">
-          Mimo/Codecademy: $10-40/month, zero CLI content<br />
-          TermVibe Pro: $14.99/month, 100+ terminal lessons + AI coaching
+          AI helps you code. TermVibe helps you ship.<br />
+          Join 500+ vibe coders who stopped hitting the 'Deployment Wall'.
         </p>
       </div>
     </section>
